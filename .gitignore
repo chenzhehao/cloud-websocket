@@ -29,9 +29,9 @@ dao/src/main/resources/mybatis_generator.properties
 
 target/
 target/*
-/client/target/
-client/target/
-client/target/*
+/outer/target/
+outer/target/
+outer/target/*
 /common/target/
 common/target/
 common/target/*
