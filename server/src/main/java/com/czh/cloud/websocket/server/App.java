@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages = "com.czh.cloud")
+@SpringBootApplication(scanBasePackages = "com")
 @EnableCircuitBreaker// 启动断路器
 @EnableHystrixDashboard
 // 开启dashboard，通过图形化的方式监控: 查看 http://localhost:10030/archetype2/hystrix http://127.0.0.1:12082/archetype2/hystrix.stream
-@EnableFeignClients(basePackages = "com.czh.cloud")
+@EnableFeignClients(basePackages = "com")
 @EnableSwagger2
 @MapperScan("com.czh.cloud.websocket.server.mapper")
 @EnableDiscoveryClient
