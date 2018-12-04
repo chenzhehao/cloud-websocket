@@ -28,40 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketServer {
     private static Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
     public static Map<String, Map<String, Session>> clients = new ConcurrentHashMap();
-
     public String token;
     public String key;
-
-    public static void addToClients(String key, String token, Session session) {
-        Map<String, Session> map = clients.get(key);
-        if (map == null) {
-            map = new HashMap();
-        }
-        map.put(token, session);
-        clients.put(key, map);
-    }
-
-    public static Session getFromClients(String key, String token) {
-        try {
-            return clients.get(key).get(token);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static boolean removeFromClients(String key, String token) {
-        Session session = getFromClients(key, token);
-        boolean flag = false;
-        if (session != null) {
-            clients.get(key).remove(token);
-            flag = true;
-        }
-        return flag;
-    }
-
-    public static String getKey(Object kind, Object id) {
-        return "webSocket_token_" + kind + "_" + id;
-    }
 
     /**
      * 建立连接
@@ -77,7 +45,6 @@ public class WebSocketServer {
         this.token = token;
         this.key = key;
     }
-
 
     /**
      * 功能描述: 订阅消息处理
@@ -172,4 +139,34 @@ public class WebSocketServer {
         }
     }
 
+    public static void addToClients(String key, String token, Session session) {
+        Map<String, Session> map = clients.get(key);
+        if (map == null) {
+            map = new HashMap();
+        }
+        map.put(token, session);
+        clients.put(key, map);
+    }
+
+    public static Session getFromClients(String key, String token) {
+        try {
+            return clients.get(key).get(token);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static boolean removeFromClients(String key, String token) {
+        Session session = getFromClients(key, token);
+        boolean flag = false;
+        if (session != null) {
+            clients.get(key).remove(token);
+            flag = true;
+        }
+        return flag;
+    }
+
+    public static String getKey(Object kind, Object id) {
+        return "webSocket_token_" + kind + "_" + id;
+    }
 }
