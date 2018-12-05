@@ -113,10 +113,12 @@ public class WebSocketServer {
             Map<String, Object> map1 = Maps.newHashMap();
             map1.put("messageType", 4);
             map1.put("key", key);
-            map1.put("textMessage", textMessage);
             map1.put("fromToken", fromToken);
             map1.put("totoken", totoken);
-            RedisService.stringRedisTemplate.convertAndSend("redisChat", JSON.toJSONString(map1));//推送到其他服务器，给用户推送消息
+            for (int i = 0; i < 100; i++) {
+                map1.put("textMessage", textMessage + i);
+                RedisService.stringRedisTemplate.convertAndSend("redisChat", JSON.toJSONString(map1));//推送到其他服务器，给用户推送消息
+            }
         } catch (Exception e) {
             logger.info("发生了错误了");
         }
@@ -134,7 +136,11 @@ public class WebSocketServer {
         Map<String, Session> map = clients.get(key);
         for (String set : map.keySet()) {
             if (!set.equals(fromToken)) {
-                map.get(set).getAsyncRemote().sendText(message);
+                try {
+                    map.get(set).getAsyncRemote().sendText(message);
+                } catch (Exception e) {
+                    logger.error("状态异常：{}{}", set, e);
+                }
             }
         }
     }
