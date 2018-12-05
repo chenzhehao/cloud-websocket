@@ -136,14 +136,20 @@ public class WebSocketServer {
         Map<String, Session> map = clients.get(key);
         for (String set : map.keySet()) {
             if (!set.equals(fromToken)) {
-                try {
-                    map.get(set).getAsyncRemote().sendText(message);
-                } catch (Exception e) {
-                    logger.error("状态异常：{}{}", set, e);
-                }
+                send(map, set, message);
             }
         }
     }
+
+    //增加同步标志，防止一个socket的第一条消息没有发送完成就开始发送第二条消息造成的状态不正常报错--效率较低，需考虑优化方案
+    public synchronized static void send(Map<String, Session> map, String set, String message) {
+        try {
+            map.get(set).getAsyncRemote().sendText(message);
+        } catch (Exception e) {
+            logger.error("状态异常：{}{}", set, e);
+        }
+    }
+
 
     public static void addToClients(String key, String token, Session session) {
         Map<String, Session> map = clients.get(key);
