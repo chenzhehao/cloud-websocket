@@ -1,4 +1,4 @@
-package com.czh.cloud.websocket.server.config;
+package com.czh.cloud.websocket.server.service;
 
 import com.czh.cloud.websocket.server.socket.WebSocketServer;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date: 2018/12/4 13:38
  */
 @Component
-public class RedisMsgSub {
+public class RedisMsgService {
 
     /**
      * 接收消息的方法
@@ -18,8 +18,6 @@ public class RedisMsgSub {
      * @param info 订阅消息
      */
     public void receiveMessage(String info) {
-        System.out.println(info);
         WebSocketServer.subscribe(info);
-
     }
 }

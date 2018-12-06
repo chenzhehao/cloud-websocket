@@ -15,6 +15,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  * @author: zhehao.chen
@@ -117,6 +118,7 @@ public class WebSocketServer {
             map1.put("totoken", totoken);
             for (int i = 0; i < 100; i++) {
                 map1.put("textMessage", textMessage + i);
+                Thread.sleep(10);
                 RedisService.stringRedisTemplate.convertAndSend("redisChat", JSON.toJSONString(map1));//推送到其他服务器，给用户推送消息
             }
         } catch (Exception e) {
@@ -136,7 +138,20 @@ public class WebSocketServer {
         Map<String, Session> map = clients.get(key);
         for (String set : map.keySet()) {
             if (!set.equals(fromToken)) {
-                send(map, set, message);
+                Session session =  map.get(set) ;
+                synchronized (session){
+                    logger.info("锁住对象"+session.getId()+message);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Future future = map.get(set).getAsyncRemote().sendText(message);
+                    while(!future.isDone()){
+                    }
+                    logger.info("释放锁住对象"+session.getId()+message);
+                }
+//                send(map, set, message);
             }
         }
     }
